@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フライト選択 | LEAF WINGS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 共通設定 (index.htmlと同一) --- */
+        :root {
+            --leaf-mint: #00C9A7;
+            --leaf-sky: #4FACFE;
+            --pure-white: #FFFFFF;
+            --accent-gray: #F0F4F8;
+            --text-dark: #2C3E50;
+            --text-light: #8898aa;
+            --price-color: #e67e22; /* 価格強調用オレンジ */
+        }
+        body, html {
+            margin: 0; padding: 0;
+            font-family: "Montserrat", "Noto Sans JP", sans-serif;
+            background-color: var(--accent-gray); color: var(--text-dark);
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        
+        /* --- ヘッダー (簡易版) --- */
+        header {
+            background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky));
+            padding: 15px 40px; color: var(--pure-white); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 20px; font-weight: 700; display: flex; align-items: center; letter-spacing: 0.1em; }
+        .logo-icon { width: 24px; height: 24px; background-color: var(--pure-white); border-radius: 50%; margin-right: 10px; position: relative; }
+        .logo-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid var(--leaf-mint); }
+        .step-indicator { display: flex; gap: 20px; font-size: 12px; opacity: 0.9; }
+        .step { position: relative; font-weight: 500; }
+        .step.active { font-weight: 700; border-bottom: 2px solid var(--pure-white); padding-bottom: 2px; }
+
+        /* --- 検索条件バー --- */
+        .search-summary-bar {
+            background-color: var(--pure-white); padding: 15px 0; border-bottom: 1px solid #ddd;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .summary-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .route-info { font-size: 18px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; }
+        .route-arrow { color: var(--leaf-mint); margin: 0 10px; font-size: 14px; }
+        .change-search-btn {
+            font-size: 12px; color: var(--leaf-mint); border: 1px solid var(--leaf-mint); padding: 5px 15px; border-radius: 20px; font-weight: 600;
+        }
+        .change-search-btn:hover { background-color: var(--leaf-mint); color: var(--pure-white); }
+
+        /* --- 日付選択ストリップ (カレンダー) --- */
+        .date-strip {
+            display: flex; justify-content: space-between; background: var(--pure-white); margin-top: 20px; padding: 10px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-x: auto;
+        }
+        .date-card {
+            flex: 1; min-width: 80px; text-align: center; padding: 10px 5px; cursor: pointer; border-radius: 4px; border: 1px solid transparent; transition: 0.2s;
+        }
+        .date-card:hover { background-color: #f9f9f9; }
+        .date-card.active { background-color: var(--leaf-mint); color: var(--pure-white); box-shadow: 0 4px 10px rgba(0, 201, 167, 0.3); }
+        .date-card .day { font-size: 12px; margin-bottom: 5px; }
+        .date-card .price { font-size: 13px; font-weight: 700; }
+        .date-card.active .price { color: var(--pure-white); }
+
+        /* --- フライトリスト --- */
+        .flight-list { margin-top: 20px; padding-bottom: 60px; }
+        
+        .flight-card {
+            background-color: var(--pure-white); border-radius: 8px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid transparent; transition: 0.3s;
+        }
+        .flight-card:hover { border-color: var(--leaf-sky); transform: translateY(-2px); }
+
+        .flight-info-row {
+            padding: 25px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid #eee;
+        }
+        
+        /* 時刻・便名 */
+        .flight-times { display: flex; align-items: center; gap: 30px; flex: 2; min-width: 250px; }
+        .time-group { text-align: center; }
+        .time { font-size: 24px; font-weight: 700; color: var(--text-dark); line-height: 1; }
+        .airport { font-size: 12px; color: var(--text-light); margin-top: 5px; font-weight: 500; }
+        .duration-line { flex: 1; text-align: center; position: relative; font-size: 11px; color: var(--text-light); }
+        .duration-line::after { content: ''; display: block; width: 100%; height: 1px; background: #ddd; position: absolute; top: 50%; z-index: 0; }
+        .duration-text { background: var(--pure-white); padding: 0 10px; position: relative; z-index: 1; }
+        
+        .flight-meta { display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--text-light); min-width: 80px; }
+        .flight-number { font-weight: 700; color: var(--leaf-sky); }
+
+        /* 料金選択エリア */
+        .fare-selection {
+            display: flex; width: 100%;
+        }
+        .fare-box {
+            flex: 1; padding: 20px; text-align: center; cursor: pointer; border-right: 1px solid #eee; position: relative; transition: 0.2s;
+        }
+        .fare-box:last-child { border-right: none; }
+        .fare-box:hover { background-color: #fafafa; }
+        
+        /* 選択状態 */
+        .fare-box.selected { background-color: #eafbf7; }
+        .fare-box.selected::before { content: '✔'; position: absolute; top: 10px; left: 10px; color: var(--leaf-mint); font-weight: bold; }
+
+        .class-name { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px; letter-spacing: 0.05em; }
+        .fare-price { font-size: 20px; font-weight: 700; color: var(--text-dark); }
+        .fare-seats { font-size: 11px; color: var(--text-light); margin-top: 5px; }
+        .fare-seats.low { color: #e74c3c; } /* 残席わずか */
+        
+        /* プレミアムクラスの装飾 */
+        .fare-box.premium .class-name { color: #d4af37; } /* ゴールド風 */
+
+        /* --- 下部固定バー (次へボタン) --- */
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--pure-white); padding: 15px 40px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box; z-index: 100; transform: translateY(100%); transition: 0.3s;
+        }
+        .bottom-bar.visible { transform: translateY(0); }
+        
+        .total-price-display { margin-right: 30px; text-align: right; }
+        .total-label { font-size: 12px; color: var(--text-light); }
+        .total-amount { font-size: 24px; font-weight: 700; color: var(--text-dark); }
+
+        .next-btn {
+            background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky));
+            color: var(--pure-white); border: none; padding: 12px 40px; font-size: 16px; font-weight: 700; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 201, 167, 0.4);
+        }
+        .next-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            .flight-info-row { flex-direction: column; align-items: flex-start; }
+            .flight-times { width: 100%; }
+            .fare-selection { flex-direction: column; }
+            .fare-box { border-right: none; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 15px; }
+            .fare-box .class-name { margin: 0; }
+            .bottom-bar { padding: 15px 20px; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><div class="logo-icon"></div>LEAF WINGS</div>
+        <div class="step-indicator">
+            <span class="step active">1. 便選択</span>
+            <span class="step">2. お客様情報</span>
+            <span class="step">3. 完了</span>
+        </div>
+    </header>
+
+    <div class="search-summary-bar">
+        <div class="container summary-content">
+            <div class="route-info">
+                NGO 名古屋(中部) <span class="route-arrow">✈︎</span> CTS 札幌(新千歳)
+                <span style="font-size: 14px; font-weight: 400; margin-left: 15px; color: #666;">2025年9月20日(土) / 大人1名</span>
+            </div>
+            <button class="change-search-btn">検索変更</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="date-strip">
+            <div class="date-card">
+                <div class="day">9/18(木)</div><div class="price">¥14,500</div>
+            </div>
+            <div class="date-card">
+                <div class="day">9/19(金)</div><div class="price">¥16,800</div>
+            </div>
+            <div class="date-card active">
+                <div class="day">9/20(土)</div><div class="price">¥12,400</div>
+            </div>
+            <div class="date-card">
+                <div class="day">9/21(日)</div><div class="price">¥12,400</div>
+            </div>
+            <div class="date-card">
+                <div class="day">9/22(月)</div><div class="price">¥11,200</div>
+            </div>
+            <div class="date-card">
+                <div class="day">9/23(火)</div><div class="price">¥11,200</div>
+            </div>
+        </div>
+
+        <div class="flight-list">
+            <div class="flight-card">
+                <div class="flight-info-row">
+                    <div class="flight-times">
+                        <div class="time-group">
+                            <div class="time">07:10</div><div class="airport">NGO</div>
+                        </div>
+                        <div class="duration-line"><span class="duration-text">1h 40m</span></div>
+                        <div class="time-group">
+                            <div class="time">08:50</div><div class="airport">CTS</div>
+                        </div>
+                    </div>
+                    <div class="flight-meta">
+                        <span class="flight-number">LW 101</span>
+                        <span>A320neo</span>
+                        <span>Wi-Fi Free</span>
+                    </div>
+                </div>
+                <div class="fare-selection">
+                    <div class="fare-box" onclick="selectFare(this, 12400)">
+                        <div class="class-name">Standard</div>
+                        <div class="fare-price">¥12,400</div>
+                        <div class="fare-seats">空席あり</div>
+                    </div>
+                    <div class="fare-box premium" onclick="selectFare(this, 28000)">
+                        <div class="class-name">Premium</div>
+                        <div class="fare-price">¥28,000</div>
+                        <div class="fare-seats low">残り3席</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flight-card">
+                <div class="flight-info-row">
+                    <div class="flight-times">
+                        <div class="time-group">
+                            <div class="time">10:45</div><div class="airport">NGO</div>
+                        </div>
+                        <div class="duration-line"><span class="duration-text">1h 40m</span></div>
+                        <div class="time-group">
+                            <div class="time">12:25</div><div class="airport">CTS</div>
+                        </div>
+                    </div>
+                    <div class="flight-meta">
+                        <span class="flight-number">LW 103</span>
+                        <span>A321neo</span>
+                        <span>Wi-Fi Free</span>
+                    </div>
+                </div>
+                <div class="fare-selection">
+                    <div class="fare-box" onclick="selectFare(this, 14500)">
+                        <div class="class-name">Standard</div>
+                        <div class="fare-price">¥14,500</div>
+                        <div class="fare-seats">空席あり</div>
+                    </div>
+                    <div class="fare-box premium" onclick="selectFare(this, 29500)">
+                        <div class="class-name">Premium</div>
+                        <div class="fare-price">¥29,500</div>
+                        <div class="fare-seats">空席あり</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flight-card">
+                <div class="flight-info-row">
+                    <div class="flight-times">
+                        <div class="time-group">
+                            <div class="time">14:20</div><div class="airport">NGO</div>
+                        </div>
+                        <div class="duration-line"><span class="duration-text">1h 40m</span></div>
+                        <div class="time-group">
+                            <div class="time">16:00</div><div class="airport">CTS</div>
+                        </div>
+                    </div>
+                    <div class="flight-meta">
+                        <span class="flight-number">LW 105</span>
+                        <span>A320neo</span>
+                        <span>Wi-Fi Free</span>
+                    </div>
+                </div>
+                <div class="fare-selection">
+                    <div class="fare-box" onclick="selectFare(this, 11800)">
+                        <div class="class-name">Standard</div>
+                        <div class="fare-price">¥11,800</div>
+                        <div class="fare-seats low">残り5席</div>
+                    </div>
+                    <div class="fare-box premium" onclick="selectFare(this, 28000)">
+                        <div class="class-name">Premium</div>
+                        <div class="fare-price">¥28,000</div>
+                        <div class="fare-seats low">満席</div>
+                        <style>.fare-box:last-child[onclick*="28000"] { background-color:#eee; opacity:0.6; pointer-events:none; }</style>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-bar" id="bottomBar">
+        <div class="total-price-display">
+            <div class="total-label">お支払い予定金額</div>
+            <div class="total-amount" id="totalAmount">¥0</div>
+        </div>
+        <button class="next-btn">搭乗者情報の入力へ ➝</button>
+    </div>
+
+    <script>
+        function selectFare(element, price) {
+            // すべての選択状態を解除
+            document.querySelectorAll('.fare-box').forEach(box => {
+                box.classList.remove('selected');
+            });
+            
+            // クリックされた要素を選択状態に
+            element.classList.add('selected');
+            
+            // 下部バーを表示
+            document.getElementById('bottomBar').classList.add('visible');
+            
+            // 金額を更新
+            document.getElementById('totalAmount').textContent = '¥' + price.toLocaleString();
+        }
+    </script>
+</body>
+</html>
