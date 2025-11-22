@@ -86,7 +86,7 @@
                 <div class="card-header">LEAF WINGS 会員の方</div>
                 <div class="card-body login-box">
                     <p class="login-desc">会員IDでログインすると、お客様情報の入力が省略できます。<br>マイルも自動的に積算されます。</p>
-                    <button class="btn-full btn-login" onclick="finishDemo('会員ログイン')">ログインして進む</button>
+                    <button class="btn-full btn-login" onclick="finishDemo()">ログインして進む</button>
                     <div style="font-size: 12px; margin-top: 10px;"><a href="#" style="color:var(--leaf-sky);">パスワードをお忘れの方</a></div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                 <div class="card-header">一般の方 (会員登録せずに予約)</div>
                 <div class="card-body login-box">
                     <p class="login-desc">会員登録をせずに、ゲストとして予約を進めます。<br>必要な情報のみをご入力いただきます。</p>
-                    <button class="btn-full btn-guest" onclick="finishDemo('ゲスト予約')">ゲストとして進む</button>
+                    <button class="btn-full btn-guest" onclick="finishDemo()">ゲストとして進む</button>
                 </div>
             </div>
         </div>
@@ -113,11 +113,13 @@
                     
                     <div class="flight-detail-row">
                         <span class="detail-label">便名</span>
-                        <span class="detail-value" id="sum-flight">LW 301</span>
+                        <span class="detail-value" id="sum-flight">LW ---</span>
                     </div>
                     <div class="flight-detail-row">
                         <span class="detail-label">クラス</span>
-                        <span class="detail-value">Standard <span class="flight-tag">Wi-Fi Free</span></span>
+                        <span class="detail-value">
+                            <span id="sum-class">Standard</span> <span class="flight-tag">Wi-Fi Free</span>
+                        </span>
                     </div>
                     <div class="flight-detail-row">
                         <span class="detail-label">機種</span>
@@ -126,7 +128,7 @@
 
                     <div class="price-total">
                         <span>合計金額</span>
-                        <span class="total-highlight" id="sum-price">¥13,500</span>
+                        <span class="total-highlight" id="sum-price">¥0</span>
                     </div>
                 </div>
             </div>
@@ -137,28 +139,27 @@
         document.addEventListener('DOMContentLoaded', function() {
             // URLからデータを受け取る
             const params = new URLSearchParams(window.location.search);
+            
+            // パラメータ取得 (flight-list.htmlから送られたキーを使用)
             const from = params.get('from') || 'NGO';
             const to = params.get('to') || 'FUK';
             const price = parseInt(params.get('price')) || 0;
+            const flightId = params.get('flightId') || '???';
+            const className = params.get('class') || 'Standard';
             
             // 画面に反映
             document.getElementById('sum-from').textContent = from;
             document.getElementById('sum-to').textContent = to;
             document.getElementById('sum-price').textContent = '¥' + price.toLocaleString();
-
-            // 便名をそれっぽく自動生成（手抜きロジック）
-            // 本当はflight-listから渡すべきですが、簡単にするため
-            let flightNum = 'LW 101';
-            if(to === 'FUK') flightNum = 'LW 301';
-            if(to === 'OKA') flightNum = 'LW 501';
-            if(to === 'CTS') flightNum = 'LW 101';
-            document.getElementById('sum-flight').textContent = flightNum;
+            
+            // 便名には LW をつける
+            document.getElementById('sum-flight').textContent = 'LW ' + flightId;
+            document.getElementById('sum-class').textContent = className;
         });
 
-        function finishDemo(type) {
-            alert(`【デモ終了】\nここから先は個人情報入力画面のため、デモはここまでとなります。\n\n選択コース: ${type}\n\nLEAF WINGSをご利用いただきありがとうございました！🌿`);
-            // トップページに戻る
-            window.location.href = 'index.html';
+        function finishDemo() {
+            // 完了ページへ遷移
+            window.location.href = 'completed.html';
         }
     </script>
 </body>
