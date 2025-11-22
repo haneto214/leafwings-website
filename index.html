@@ -360,39 +360,53 @@
         <p>&copy; 202X LEAF WINGS Co., Ltd. All rights reserved. | IATA: LW / ICAO: LFW</p>
     </footer>
 
-    <script>
+ <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- 既存のロジック：日付や空港の制御 ---
             const departureSelect = document.getElementById('departure-select');
             const arrivalSelect = document.getElementById('arrival-select');
             const dateInput = document.getElementById('dep-date');
+            
+            // 日付の初期値を「今日」に設定
             const today = new Date().toISOString().split('T')[0];
             dateInput.value = today;
+
+            // 空港リスト
             const cities = {
                 'NGO': '名古屋(中部) NGO',
                 'CTS': '札幌(新千歳) CTS', 'SDJ': '仙台 SDJ', 'KIJ': '新潟 KIJ',
                 'FUK': '福岡 FUK', 'KMJ': '熊本 KMJ', 'KMI': '宮崎 KMI', 'MYJ': '松山 MYJ', 'OKA': '沖縄(那覇) OKA',
                 'TPE': '台北(桃園) TPE', 'ICN': 'ソウル(仁川) ICN', 'MNL': 'マニラ MNL', 'BKK': 'バンコク BKK'
             };
+            
+            // 中部拠点（ハブ＆スポーク）のロジック
             const routes = {
                 'NGO': ['CTS', 'SDJ', 'KIJ', 'FUK', 'KMJ', 'KMI', 'MYJ', 'OKA', 'TPE', 'ICN', 'MNL', 'BKK'],
-                'other': ['NGO']
+                'other': ['NGO'] // 地方空港からはNGO行きのみ
             };
+
             departureSelect.addEventListener('change', function() {
                 const selectedDep = this.value;
                 let availableArrivals = [];
+
                 if (selectedDep === 'NGO') {
                     availableArrivals = routes['NGO'];
                 } else {
                     availableArrivals = routes['other'];
                 }
+
+                // 到着地セレクトボックスをリセットして生成し直し
                 arrivalSelect.innerHTML = '<option value="">選択してください</option>';
+                
                 const domGroup = document.createElement('optgroup'); domGroup.label = '国内線';
                 const intGroup = document.createElement('optgroup'); intGroup.label = '国際線';
                 let hasDom = false, hasInt = false;
+
                 availableArrivals.forEach(cityCode => {
                     const option = document.createElement('option');
                     option.value = cityCode;
                     option.textContent = cities[cityCode];
+                    
                     if (['TPE', 'ICN', 'MNL', 'BKK'].includes(cityCode)) {
                         intGroup.appendChild(option);
                         hasInt = true;
@@ -401,11 +415,28 @@
                         hasDom = true;
                     }
                 });
+
                 if (hasDom) arrivalSelect.appendChild(domGroup);
                 if (hasInt) arrivalSelect.appendChild(intGroup);
+            });
+
+            // --- ★ここを追加しました：画面遷移の処理 ---
+            const searchBtn = document.querySelector('.search-btn');
+            
+            searchBtn.addEventListener('click', function() {
+                // バリデーション：到着地が選ばれていない場合
+                if (arrivalSelect.value === "") {
+                    alert("到着地を選択してください。\nPlease select a destination.");
+                    arrivalSelect.focus();
+                    return;
+                }
+
+                // リンク先へ移動（同じフォルダの flight-list.html へ）
+                window.location.href = 'flight-list.html';
             });
         });
     </script>
 
 </body>
 </html>
+
