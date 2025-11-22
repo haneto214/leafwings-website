@@ -3,35 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKYNOVA JAPAN | 準備中</title>
+    <title>LEAF WINGS | Fresh Air, Fresh Wings.</title>
+    
+    <linkpreconnect href="https://fonts.googleapis.com">
+    <linkpreconnect href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* 簡易的なデザイン設定 */
-        body {
+        /* --- 基本設定：カラーパレットを刷新 --- */
+        :root {
+            --leaf-mint: #00C9A7; /* 新メインカラー：爽やかなミントグリーン */
+            --leaf-sky: #4FACFE;  /* 新サブカラー：澄み渡るスカイブルー */
+            --pure-white: #FFFFFF;
+            --accent-gray: #F0F4F8; /* 少し青みがかった涼しげなライトグレー */
+            --text-dark: #2C3E50;   /* 文字色は視認性のため濃いグレーを維持 */
+            --text-light-gray: #8898aa;
+        }
+        body, html {
             margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; /* 画面全体の高さ */
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            background-color: #0A1A4A; /* SKYNOVAブルーの背景 */
-            color: #ffffff;
+            font-family: "Montserrat", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--pure-white); color: var(--text-dark);
+            line-height: 1.7; letter-spacing: 0.03em;
         }
-        .container {
-            text-align: center;
-            padding: 40px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            background-color: rgba(255,255,255,0.1); /* 半透明のボックス */
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        h2.section-title {
+            /* タイトル色をミントグリーンに変更 */
+            text-align: center; font-size: 32px; color: var(--leaf-mint); margin-bottom: 40px; font-weight: 700; letter-spacing: 0.05em;
         }
-        h1 { font-size: 24px; margin-bottom: 20px; letter-spacing: 0.1em; }
-        p { font-size: 16px; line-height: 1.8; opacity: 0.9; }
-        .icon { font-size: 48px; margin-bottom: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+        /* --- ヘッダー --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 40px;
+            /* 背景をミントグリーンとスカイブルーのグラデーションに変更 */
+            background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky));
+            color: var(--pure-white);
+            position: fixed; width: 100%; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 20px; font-weight: 700; letter-spacing: 0.1em; display: flex; align-items: center; }
+        .logo-icon { width: 24px; height: 24px; background-color: var(--pure-white); border-radius: 50%; margin-right: 10px; position: relative; }
+        /* ロゴアイコンの中身の色を変更 */
+        .logo-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid var(--leaf-mint); }
+        nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
+        nav ul li { margin-left: 25px; font-size: 13px; font-weight: 500; letter-spacing: 0.05em; position: relative; }
+        nav ul li a { padding-bottom: 5px; }
+        nav ul li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: var(--pure-white); transition: 0.3s; }
+        nav ul li a:hover::after { width: 100%; }
+        .login-btn { border: 1px solid rgba(255,255,255,0.5); padding: 6px 15px; border-radius: 2px; }
+        .login-btn:hover { background-color: rgba(255,255,255,0.2); border-color: var(--pure-white); }
+        .login-btn::after { display: none; }
+
+        /* --- ヒーローセクション --- */
+        .hero {
+            /* 背景を爽やかなミント〜スカイブルーのグラデーションに変更 */
+            background: linear-gradient(135deg, var(--leaf-mint) 0%, var(--leaf-sky) 100%);
+            min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--pure-white); padding: 120px 20px 60px; position: relative; overflow: hidden;
+        }
+        /* 背景の飛行機シルエットを少し明るく */
+        .hero::before { content: '✈︎'; font-size: 450px; position: absolute; top: 50%; left: 65%; transform: translate(-50%, -50%) rotate(-15deg); opacity: 0.1; color: var(--pure-white); z-index: 0; filter: blur(2px); }
+        .hero-content { z-index: 1; max-width: 800px; margin-bottom: 40px; }
+        .hero h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 700; margin-bottom: 15px; letter-spacing: 0.08em; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .hero p { font-size: clamp(16px, 3vw, 20px); font-weight: 400; opacity: 0.95; letter-spacing: 0.05em; }
+        
+        /* 予約ウィジェット */
+        .booking-widget { background-color: var(--pure-white); padding: 30px; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: flex-end; color: var(--text-dark); width: 90%; max-width: 1080px; z-index: 10; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 150px; display: flex; flex-direction: column; text-align: left; }
+        /* ラベル色をミントグリーンに変更 */
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--leaf-mint); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-group input, .form-group select { padding: 15px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 15px; font-family: inherit; background-color: #fcfcfc; transition: 0.3s; width: 100%; box-sizing: border-box; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--leaf-mint); background-color: var(--pure-white); }
+        /* 検索ボタンをグラデーションに変更 */
+        .search-btn { background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); color: var(--pure-white); border: none; padding: 18px 40px; font-size: 15px; font-weight: 700; border-radius: 2px; cursor: pointer; transition: 0.3s; letter-spacing: 0.1em; box-shadow: 0 5px 15px rgba(0, 201, 167, 0.3); flex-grow: 1; }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 201, 167, 0.4); }
+
+        /* --- ニュースセクション --- */
+        .news-section { padding: 60px 0; background-color: var(--pure-white); }
+        .news-container { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; gap: 40px; flex-wrap: wrap; }
+        .news-block { flex: 1; min-width: 300px; }
+        /* 見出しのアクセントカラーを変更 */
+        .news-block h3 { font-size: 16px; color: var(--leaf-mint); margin-bottom: 20px; display: flex; align-items: center; }
+        .news-block h3::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: var(--leaf-mint); margin-right: 10px; }
+        .news-list { list-style: none; padding: 0; margin: 0; }
+        .news-list li { border-bottom: 1px solid #eee; padding: 15px 0; font-size: 14px; display: flex; align-items: baseline; }
+        .news-date { color: var(--text-light-gray); font-size: 12px; margin-right: 20px; min-width: 80px; font-weight: 500; }
+        .news-list li a:hover { color: var(--leaf-mint); text-decoration: underline; }
+        .important-notice { background-color: #fff0f0; padding: 15px; border-left: 4px solid #e74c3c; margin-bottom: 20px; font-size: 14px; color: #c0392b; }
+
+        /* --- 就航地ガイドセクション --- */
+        .destinations { padding: 80px 0; background-color: var(--accent-gray); }
+        .destinations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        /* カード背景色を変更 */
+        .destination-card { position: relative; height: 300px; border-radius: 4px; overflow: hidden; cursor: pointer; background-color: var(--leaf-mint); }
+        .destination-card:hover .destination-bg { transform: scale(1.05); opacity: 0.9; }
+        .destination-bg { width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.5s; opacity: 0.7; }
+        /* プレースホルダーグラデーションを新カラーに合わせて調整（明るく爽やかに） */
+        .dest-tpe { background: linear-gradient(to top, var(--leaf-mint), transparent), linear-gradient(to right, #FFC371, #FF5F6D); }
+        .dest-icn { background: linear-gradient(to top, var(--leaf-sky), transparent), linear-gradient(to right, #6dd5ed, #2193b0); }
+        .dest-mnl { background: linear-gradient(to top, var(--leaf-mint), transparent), linear-gradient(to right, #f5af19, #f12711); }
+        .destination-info { position: absolute; bottom: 0; left: 0; padding: 25px; color: var(--pure-white); z-index: 2; }
+        .destination-code { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; opacity: 0.9; }
+        .destination-city { font-size: 28px; font-weight: 700; margin: 5px 0 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .destination-desc { font-size: 14px; opacity: 1; text-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* --- 特徴セクション --- */
+        .features { padding: 80px 0; background-color: var(--pure-white); }
+        .feature-cards { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .feature-card { background: var(--pure-white); padding: 40px; border-radius: 4px; flex: 1; min-width: 250px; max-width: 350px; text-align: center; border: 1px solid #eee; transition: 0.4s; }
+        .feature-card:hover { border-color: var(--leaf-mint); box-shadow: 0 10px 30px rgba(0, 201, 167, 0.1); }
+        /* アイコン色を変更 */
+        .feature-icon { font-size: 48px; color: var(--leaf-mint); margin-bottom: 25px; }
+        .feature-card h3 { margin: 0 0 15px 0; color: var(--leaf-mint); font-size: 18px; font-weight: 700; }
+        .feature-card p { font-size: 14px; color: #666; line-height: 1.8; }
+
+        /* --- 安全と品質への誓いセクション --- */
+        .commitment { padding: 80px 0; background-color: var(--accent-gray); }
+        .commitment-blocks { display: flex; gap: 40px; flex-wrap: wrap; }
+        /* ボーダー色を変更 */
+        .commitment-block { flex: 1; min-width: 300px; background-color: var(--pure-white); padding: 40px; border-radius: 4px; border-left: 5px solid var(--leaf-mint); }
+        .commitment-block h3 { color: var(--leaf-mint); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; }
+        .commitment-icon { font-size: 24px; margin-right: 15px; }
+        .commitment-block p { font-size: 15px; color: #555; line-height: 1.9; }
+
+        /* --- 機内体験バナー --- */
+        /* グラデーションを新カラーに変更 */
+        .experience-banner { height: 400px; position: relative; display: flex; align-items: center; background: linear-gradient(45deg, var(--leaf-mint), var(--leaf-sky)); overflow: hidden; }
+        .experience-banner::after { content: '💺 💺'; position: absolute; right: 10%; top: 50%; transform: translateY(-50%); font-size: 150px; opacity: 0.1; color: var(--pure-white); }
+        .experience-content { position: relative; z-index: 2; max-width: 500px; margin-left: 10%; color: var(--pure-white); padding: 20px; }
+        .experience-content h2 { font-size: clamp(32px, 4vw, 42px); font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .experience-content p { font-size: clamp(16px, 2vw, 18px); margin-bottom: 30px; opacity: 1; }
+        .btn-outline-white { padding: 12px 35px; border: 2px solid var(--pure-white); color: var(--pure-white); font-weight: 700; transition: 0.3s; display: inline-block; border-radius: 2px; }
+        .btn-outline-white:hover { background-color: var(--pure-white); color: var(--leaf-mint); }
+
+        /* --- アプリ＆マイレージ誘導 --- */
+        /* 背景をグラデーションに変更 */
+        .app-mileage { padding: 60px 20px; background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); color: var(--pure-white); text-align: center; }
+        .app-mileage h3 { font-size: 24px; margin-bottom: 20px; }
+        .app-mileage p { margin-bottom: 30px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .app-buttons { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .app-btn { background-color: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 4px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.4); transition: 0.3s; min-width: 180px; }
+        .app-btn:hover { background-color: rgba(255,255,255,0.2); border-color: var(--pure-white); }
+        .app-btn span { font-size: 11px; text-align: left; display: block; }
+        .app-btn strong { display: block; font-size: 15px; text-align: left; }
+        .app-icon { font-size: 24px; margin-right: 12px; }
+
+        /* --- フッター --- */
+        /* 背景色を少し明るいネイビーに変更して軽さを出す */
+        footer { background-color: #1a2a3a; color: rgba(255,255,255,0.6); padding: 40px 20px; text-align: center; font-size: 11px; letter-spacing: 0.1em; }
+
+        /* --- スマホ対応メディアクエリ (変更なし) --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; flex-wrap: wrap; }
+            nav { display: none; }
+            .header .logo { flex-grow: 1; }
+            .container { padding: 0 20px; }
+            .hero { padding-top: 100px; height: auto; min-height: auto; padding-bottom: 40px; }
+            .booking-widget { width: 95%; padding: 25px 20px; gap: 15px; }
+            .form-group { flex-basis: 100%; }
+            .search-btn { width: 100%; margin-top: 10px; }
+            h2.section-title { font-size: 24px; margin-bottom: 30px; }
+            .destinations-grid { grid-template-columns: 1fr; }
+            .commitment-block { padding: 30px; }
+            .experience-banner { height: auto; padding: 50px 0; }
+            .experience-content { margin-left: 20px; margin-right: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon">✈︎</div>
-        <h1>SKYNOVA JAPAN</h1>
-        <p>ただいま、ウェブサイトの準備中です。<br>正式公開まで、今しばらくお待ちください。</p>
-        <p style="font-size: 12px; margin-top: 30px; opacity: 0.6;">(テストデプロイ成功！)</p>
-    </div>
+    
+    <header>
+        <div class="logo"><div class="logo-icon"></div>LEAF WINGS</div>
+        <nav>
+            <ul>
+                <li><a href="#">予約・購入</a></li>
+                <li><a href="#">運航状況</a></li>
+                <li><a href="#">クラス・サービス</a></li>
+                <li><a href="#">LW MILEAGE</a></li>
+                <li><a href="#" class="login-btn">ログイン</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Fresh Air, Fresh Wings.</h1>
+            <p>澄み渡る空、生まれたての翼。新しい空の旅へ。</p>
+        </div>
+        <div class="booking-widget">
+            <div class="form-group" style="flex: 1.5;">
+                <label>出発地 From</label>
+                <select id="departure-select">
+                    <option value="NGO" selected>名古屋(中部) NGO</option>
+                    <optgroup label="北海道・東北・北陸">
+                        <option value="CTS">札幌(新千歳) CTS</option>
+                        <option value="SDJ">仙台 SDJ</option>
+                        <option value="KIJ">新潟 KIJ</option>
+                    </optgroup>
+                    <optgroup label="西日本・沖縄">
+                        <option value="FUK">福岡 FUK</option>
+                        <option value="KMJ">熊本 KMJ</option>
+                        <option value="KMI">宮崎 KMI</option>
+                        <option value="MYJ">松山 MYJ</option>
+                        <option value="OKA">沖縄(那覇) OKA</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1.5;">
+                <label>到着地 To</label>
+                <select id="arrival-select">
+                    <option value="">選択してください</option>
+                    <optgroup label="国内線">
+                        <option value="CTS">札幌(新千歳) CTS</option>
+                        <option value="SDJ">仙台 SDJ</option>
+                        <option value="KIJ">新潟 KIJ</option>
+                        <option value="FUK">福岡 FUK</option>
+                        <option value="KMJ">熊本 KMJ</option>
+                        <option value="KMI">宮崎 KMI</option>
+                        <option value="MYJ">松山 MYJ</option>
+                        <option value="OKA">沖縄(那覇) OKA</option>
+                    </optgroup>
+                    <optgroup label="国際線">
+                        <option value="TPE">台北(桃園) TPE</option>
+                        <option value="ICN">ソウル(仁川) ICN</option>
+                        <option value="MNL">マニラ MNL</option>
+                        <option value="BKK">バンコク BKK</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>往路 Departure</label>
+                <input type="date" id="dep-date">
+            </div>
+            <div class="form-group" style="flex: 0.5;">
+                <label>人数</label>
+                <select><option>1名</option><option>2名</option><option>3名</option></select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>クラス Class</label>
+                <select><option>全クラス</option><option>Premium Class</option><option>Standard Class</option></select>
+            </div>
+            <button class="search-btn">検索 Search</button>
+        </div>
+    </section>
+
+    <section class="news-section">
+        <div class="news-container">
+            <div class="news-block">
+                <h3>運航情報</h3>
+                <div class="important-notice">
+                    <strong>【重要】台風〇〇号の影響について</strong><br>
+                    〇月〇日の那覇発着便において、遅延・欠航の可能性がございます。最新の運航状況をご確認ください。
+                </div>
+            </div>
+            <div class="news-block">
+                <h3>News & Topics</h3>
+                <ul class="news-list">
+                    <li><span class="news-date">2025.09.15</span><a href="#">LEAF WINGS 国際線定期便（台北・ソウル・マニラ・バンコク）の就航を開始しました</a></li>
+                    <li><span class="news-date">2025.09.01</span><a href="#">新機材エアバスA321型機を導入。国際線プレミアムクラスを拡大します</a></li>
+                    <li><span class="news-date">2025.08.20</span><a href="#">セントレア朝7:10発、全国主要都市への一斉出発ダイヤを開始</a></li>
+                    <li><span class="news-date">2025.08.01</span><a href="#">2025年冬ダイヤの航空券販売を開始しました</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="destinations">
+        <div class="container">
+            <h2 class="section-title">Discover Our Destinations</h2>
+            <div class="destinations-grid">
+                <div class="destination-card">
+                    <div class="destination-bg dest-tpe"></div>
+                    <div class="destination-info">
+                        <div class="destination-code">TPE / TAIWAN</div>
+                        <div class="destination-city">台北</div>
+                        <div class="destination-desc">美食と歴史が交錯する、エネルギッシュな街へ。</div>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-bg dest-icn"></div>
+                    <div class="destination-info">
+                        <div class="destination-code">ICN / KOREA</div>
+                        <div class="destination-city">ソウル</div>
+                        <div class="destination-desc">トレンドの最先端と、伝統の息吹を感じる旅。</div>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-bg dest-mnl"></div>
+                    <div class="destination-info">
+                        <div class="destination-code">MNL / PHILIPPINES</div>
+                        <div class="destination-city">マニラ</div>
+                        <div class="destination-desc">成長するアジアの熱気と、美しい夕日の海岸線。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why LEAF WINGS</h2>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon">💺</div>
+                    <h3>Premium Class</h3>
+                    <p>A320/A321で実現した、ゆとりの2-2配列。上質な本革シートで、くつろぎのひとときを。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📶</div>
+                    <h3>Inflight Wi-Fi</h3>
+                    <p>国際線を含む全機・全席で高速Wi-Fiを完備。空の上でも、ビジネスと世界につながります。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛫</div>
+                    <h3>Centrair Hub</h3>
+                    <p>中部国際空港から、毎朝7:10に全国主要都市へ一斉出発。ビジネスの朝をリードします。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="commitment">
+        <div class="container">
+            <h2 class="section-title">Our Commitment</h2>
+            <div class="commitment-blocks">
+                <div class="commitment-block">
+                    <h3><span class="commitment-icon">🛡️</span>Safety First</h3>
+                    <p>エアバス社の最新鋭機材A320/A321の導入と、日本の厳格な基準に基づいた整備・運航体制。お客様の安全を何よりも優先します。日々の点検から独自の安全教育まで、妥協のない品質を追求しています。</p>
+                </div>
+                <div class="commitment-block">
+                    <h3><span class="commitment-icon">🍃</span>Fresh Air Hospitality</h3>
+                    <p>新緑のような心地よい空間で、日本らしいきめ細やかな心遣いに満ちたサービスを。お客様の心も体もリフレッシュできる、新しい空の旅をお約束します。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="experience-banner">
+        <div class="experience-content">
+            <h2>Feel the Fresh Breeze.</h2>
+            <p>それは、移動のための時間ではありません。<br>あなたを心地よい空の世界へ誘う、特別な体験です。</p>
+            <a href="#" class="btn-outline-white">シート・機内サービスを見る</a>
+        </div>
+    </section>
+
+    <section class="app-mileage">
+        <div class="container">
+            <h3>LEAF WINGS 公式アプリで、もっとスムーズに。</h3>
+            <p><strong>ご搭乗ですぐにマイルが貯まる。</strong><br>アプリ限定のキャンペーンや、スムーズな予約管理で、旅をよりスマートに。</p>
+            <div class="app-buttons">
+                <a href="#" class="app-btn"><div class="app-icon"></div><div><span>Download on the</span><strong>App Store</strong></div></a>
+                <a href="#" class="app-btn"><div class="app-icon">▶</div><div><span>GET IT ON</span><strong>Google Play</strong></div></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 202X LEAF WINGS Co., Ltd. All rights reserved. | IATA: LW / ICAO: LFW</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const departureSelect = document.getElementById('departure-select');
+            const arrivalSelect = document.getElementById('arrival-select');
+            const dateInput = document.getElementById('dep-date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+            const cities = {
+                'NGO': '名古屋(中部) NGO',
+                'CTS': '札幌(新千歳) CTS', 'SDJ': '仙台 SDJ', 'KIJ': '新潟 KIJ',
+                'FUK': '福岡 FUK', 'KMJ': '熊本 KMJ', 'KMI': '宮崎 KMI', 'MYJ': '松山 MYJ', 'OKA': '沖縄(那覇) OKA',
+                'TPE': '台北(桃園) TPE', 'ICN': 'ソウル(仁川) ICN', 'MNL': 'マニラ MNL', 'BKK': 'バンコク BKK'
+            };
+            const routes = {
+                'NGO': ['CTS', 'SDJ', 'KIJ', 'FUK', 'KMJ', 'KMI', 'MYJ', 'OKA', 'TPE', 'ICN', 'MNL', 'BKK'],
+                'other': ['NGO']
+            };
+            departureSelect.addEventListener('change', function() {
+                const selectedDep = this.value;
+                let availableArrivals = [];
+                if (selectedDep === 'NGO') {
+                    availableArrivals = routes['NGO'];
+                } else {
+                    availableArrivals = routes['other'];
+                }
+                arrivalSelect.innerHTML = '<option value="">選択してください</option>';
+                const domGroup = document.createElement('optgroup'); domGroup.label = '国内線';
+                const intGroup = document.createElement('optgroup'); intGroup.label = '国際線';
+                let hasDom = false, hasInt = false;
+                availableArrivals.forEach(cityCode => {
+                    const option = document.createElement('option');
+                    option.value = cityCode;
+                    option.textContent = cities[cityCode];
+                    if (['TPE', 'ICN', 'MNL', 'BKK'].includes(cityCode)) {
+                        intGroup.appendChild(option);
+                        hasInt = true;
+                    } else {
+                        domGroup.appendChild(option);
+                        hasDom = true;
+                    }
+                });
+                if (hasDom) arrivalSelect.appendChild(domGroup);
+                if (hasInt) arrivalSelect.appendChild(intGroup);
+            });
+        });
+    </script>
+
 </body>
 </html>
