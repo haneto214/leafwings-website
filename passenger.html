@@ -11,10 +11,7 @@
 
     <style>
         /* --- 共通設定 --- */
-        :root {
-            --leaf-mint: #00C9A7; --leaf-sky: #4FACFE; --pure-white: #FFFFFF;
-            --accent-gray: #F0F4F8; --text-dark: #2C3E50; --text-light: #8898aa;
-        }
+        :root { --leaf-mint: #00C9A7; --leaf-sky: #4FACFE; --pure-white: #FFFFFF; --accent-gray: #F0F4F8; --text-dark: #2C3E50; --text-light: #8898aa; }
         body, html { margin: 0; padding: 0; font-family: "Montserrat", "Noto Sans JP", sans-serif; background-color: var(--accent-gray); color: var(--text-dark); line-height: 1.6; }
 
         header { background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); padding: 15px 40px; color: var(--pure-white); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -26,47 +23,32 @@
         .step { position: relative; font-weight: 500; color: rgba(255,255,255,0.7); }
         .step.active { font-weight: 700; color: var(--pure-white); border-bottom: 2px solid var(--pure-white); padding-bottom: 2px; }
 
-        /* メインレイアウト */
         .main-wrapper { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: flex; gap: 30px; flex-wrap: wrap; }
         .content-area { flex: 2; min-width: 300px; }
         .sidebar { flex: 1; min-width: 280px; }
 
-        /* カードスタイル */
         .card { background: var(--pure-white); border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 20px; }
-        .card-header { background-color: #f8f9fa; padding: 15px 25px; border-bottom: 1px solid #eee; font-weight: 700; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
+        .card-header { background-color: #f8f9fa; padding: 15px 25px; border-bottom: 1px solid #eee; font-weight: 700; color: var(--text-dark); }
         .card-body { padding: 25px; }
 
-        /* 旅程表示 */
         .itinerary-route { font-size: 22px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; }
         .route-arrow { color: var(--leaf-mint); margin: 0 15px; font-size: 16px; }
-        .itinerary-date { font-size: 14px; color: var(--text-light); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .trip-badge { font-size: 11px; background: #eee; padding: 2px 6px; border-radius: 4px; margin-left: 10px; font-weight: normal; color: #666; vertical-align: middle; }
         
         .flight-detail-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .detail-label { font-size: 12px; color: var(--text-light); }
         .detail-value { font-size: 16px; font-weight: 600; }
-        .flight-tag { background-color: var(--leaf-mint); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 10px; }
+        .flight-date-info { font-size: 12px; color: #666; margin-right: 10px; }
 
-        /* ログイン・ゲスト選択 */
         .login-box { text-align: center; }
-        .login-desc { font-size: 14px; margin-bottom: 20px; color: #666; }
         .btn-full { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 15px; margin-bottom: 15px; }
-        
         .btn-login { background-color: var(--text-dark); color: white; }
-        .btn-login:hover { background-color: #1a2a3a; }
-        
         .btn-guest { background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); color: white; }
-        .btn-guest:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,201,167,0.3); }
-
-        /* サイドバー（金額） */
-        .price-summary { position: sticky; top: 100px; }
-        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #555; }
+        
         .price-total { border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px; display: flex; justify-content: space-between; font-weight: 700; font-size: 18px; color: var(--text-dark); }
         .total-highlight { color: #e67e22; font-size: 24px; }
 
-        @media (max-width: 768px) {
-            .main-wrapper { flex-direction: column-reverse; }
-            .sidebar { width: 100%; }
-        }
+        @media (max-width: 768px) { .main-wrapper { flex-direction: column-reverse; } .sidebar { width: 100%; } }
     </style>
 </head>
 <body>
@@ -85,49 +67,50 @@
             <div class="card">
                 <div class="card-header">LEAF WINGS 会員の方</div>
                 <div class="card-body login-box">
-                    <p class="login-desc">会員IDでログインすると、お客様情報の入力が省略できます。<br>マイルも自動的に積算されます。</p>
+                    <p style="font-size:14px; color:#666; margin-bottom:20px;">会員IDでログインすると、お客様情報の入力が省略できます。</p>
                     <button class="btn-full btn-login" onclick="finishDemo()">ログインして進む</button>
-                    <div style="font-size: 12px; margin-top: 10px;"><a href="#" style="color:var(--leaf-sky);">パスワードをお忘れの方</a></div>
                 </div>
             </div>
-
             <div class="card">
-                <div class="card-header">一般の方 (会員登録せずに予約)</div>
+                <div class="card-header">一般の方</div>
                 <div class="card-body login-box">
-                    <p class="login-desc">会員登録をせずに、ゲストとして予約を進めます。<br>必要な情報のみをご入力いただきます。</p>
+                    <p style="font-size:14px; color:#666; margin-bottom:20px;">会員登録をせずに、ゲストとして予約を進めます。</p>
                     <button class="btn-full btn-guest" onclick="finishDemo()">ゲストとして進む</button>
                 </div>
             </div>
         </div>
 
         <div class="sidebar">
-            <div class="card price-summary">
+            <div class="card">
                 <div class="card-header">選択されたフライト</div>
                 <div class="card-body">
                     <div class="itinerary-route">
-                        <span id="sum-from">NGO</span> 
-                        <span class="route-arrow">✈︎</span> 
-                        <span id="sum-to">FUK</span>
+                        <span id="sum-from">NGO</span><span class="route-arrow"✈︎</span><span id="sum-to">FUK</span>
+                        <span class="trip-badge" id="trip-type-badge">One Way</span>
                     </div>
-                    <div class="itinerary-date">2025年9月20日(土)</div>
                     
                     <div class="flight-detail-row">
-                        <span class="detail-label">便名</span>
-                        <span class="detail-value" id="sum-flight">LW ---</span>
+                        <span class="detail-label">往路 Outbound</span>
+                        <div>
+                            <span class="flight-date-info" id="sum-date-out">--/--</span>
+                            <span class="detail-value" id="sum-flight-out">LW ---</span>
+                        </div>
                     </div>
+                    <div class="flight-detail-row" id="inbound-row" style="display:none;">
+                        <span class="detail-label">復路 Inbound</span>
+                        <div>
+                            <span class="flight-date-info" id="sum-date-in">--/--</span>
+                            <span class="detail-value" id="sum-flight-in">LW ---</span>
+                        </div>
+                    </div>
+                    
                     <div class="flight-detail-row">
                         <span class="detail-label">クラス</span>
-                        <span class="detail-value">
-                            <span id="sum-class">Standard</span> <span class="flight-tag">Wi-Fi Free</span>
-                        </span>
-                    </div>
-                    <div class="flight-detail-row">
-                        <span class="detail-label">機種</span>
-                        <span class="detail-value">Airbus A320neo</span>
+                        <span class="detail-value"><span id="sum-class">Standard</span></span>
                     </div>
 
                     <div class="price-total">
-                        <span>合計金額</span>
+                        <span>合計金額 Total</span>
                         <span class="total-highlight" id="sum-price">¥0</span>
                     </div>
                 </div>
@@ -137,28 +120,46 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // URLからデータを受け取る
             const params = new URLSearchParams(window.location.search);
             
-            // パラメータ取得 (flight-list.htmlから送られたキーを使用)
             const from = params.get('from') || 'NGO';
             const to = params.get('to') || 'FUK';
-            const price = parseInt(params.get('price')) || 0;
-            const flightId = params.get('flightId') || '???';
-            const className = params.get('class') || 'Standard';
+            const tripType = params.get('tripType') || 'oneway';
             
-            // 画面に反映
+            // 往路情報
+            const outId = params.get('out_id') || '---';
+            const outClass = params.get('out_class') || 'Standard';
+            const outPrice = parseInt(params.get('out_price')) || 0;
+            const outDate = params.get('out_date') || '';
+
+            // 復路情報
+            let inId = params.get('in_id');
+            let inPrice = parseInt(params.get('in_price')) || 0;
+            let inDate = params.get('in_date') || '';
+            
+            // 表示反映
             document.getElementById('sum-from').textContent = from;
             document.getElementById('sum-to').textContent = to;
-            document.getElementById('sum-price').textContent = '¥' + price.toLocaleString();
+            document.getElementById('sum-flight-out').textContent = 'LW ' + outId;
+            document.getElementById('sum-class').textContent = outClass;
+            document.getElementById('sum-date-out').textContent = outDate.replace(/-/g, '/');
             
-            // 便名には LW をつける
-            document.getElementById('sum-flight').textContent = 'LW ' + flightId;
-            document.getElementById('sum-class').textContent = className;
+            // 往復の場合の表示制御
+            if (tripType === 'round' && inId) {
+                document.getElementById('trip-type-badge').textContent = 'Round Trip';
+                document.getElementById('inbound-row').style.display = 'flex';
+                document.getElementById('sum-flight-in').textContent = 'LW ' + inId;
+                document.getElementById('sum-date-in').textContent = inDate.replace(/-/g, '/');
+            } else {
+                document.getElementById('trip-type-badge').textContent = 'One Way';
+            }
+
+            // 合計金額
+            const total = outPrice + inPrice;
+            document.getElementById('sum-price').textContent = '¥' + total.toLocaleString();
         });
 
         function finishDemo() {
-            // 完了ページへ遷移
             window.location.href = 'completed.html';
         }
     </script>
