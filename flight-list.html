@@ -120,10 +120,13 @@
             <div style="font-size: 12px; color: #888;">お支払い予定金額</div>
             <div class="total-amount" id="totalAmount">¥0</div>
         </div>
-        <button class="next-btn" onclick="alert('デモ画面はここまでです！\nご搭乗ありがとうございます 🌿')">搭乗者情報の入力へ ➝</button>
+        <button class="next-btn">確認画面へ進む ➝</button>
     </div>
 
     <script>
+        // 選択された情報を保持する変数
+        let selectedFlightData = {};
+
         document.addEventListener('DOMContentLoaded', function() {
             // 1. パラメータ取得
             const params = new URLSearchParams(window.location.search);
@@ -141,17 +144,14 @@
                 'KMI': { city: '宮崎', basePrice: 16000 },
                 'MYJ': { city: '松山', basePrice: 11500 },
                 'OKA': { city: '沖縄(那覇)', basePrice: 18900 },
-                // 国際線 (今回は簡易対応)
                 'TPE': { city: '台北', basePrice: 35000 },
                 'ICN': { city: 'ソウル', basePrice: 28000 },
                 'MNL': { city: 'マニラ', basePrice: 42000 },
                 'BKK': { city: 'バンコク', basePrice: 55000 }
             };
 
-            // 3. リアル時刻表データ (CSVから移植)
-            // NV便名はすべてLWに変更済み
+            // 3. リアル時刻表データ
             const realSchedules = {
-                // --- いただいた時刻表データ ---
                 'FUK': [
                     { id: '301', dep: '07:10', arr: '08:35' },
                     { id: '303', dep: '08:45', arr: '10:10' },
@@ -159,11 +159,11 @@
                     { id: '307', dep: '16:15', arr: '17:40' }
                 ],
                 'KMJ': [
-                    { id: '331', dep: '07:35', arr: '09:00' }, // 第2波
+                    { id: '331', dep: '07:35', arr: '09:00' }, 
                     { id: '333', dep: '18:00', arr: '19:25' }
                 ],
                 'KMI': [
-                    { id: '361', dep: '13:00', arr: '14:20' }  // 昼便
+                    { id: '361', dep: '13:00', arr: '14:20' }
                 ],
                 'MYJ': [
                     { id: '401', dep: '07:30', arr: '08:35' },
@@ -174,8 +174,6 @@
                     { id: '503', dep: '12:00', arr: '14:25' },
                     { id: '505', dep: '13:25', arr: '15:50' }
                 ],
-
-                // --- CSVになかった北方面 (7:10 Hub構想に合わせて作成) ---
                 'CTS': [
                     { id: '101', dep: '07:10', arr: '08:55' },
                     { id: '103', dep: '10:30', arr: '12:15' },
@@ -201,7 +199,7 @@
 
             // フライトリスト生成
             const flightListContainer = document.getElementById('flight-list-container');
-            const schedules = realSchedules[toCode] || [ // データがない路線のデフォルト(国際線など)
+            const schedules = realSchedules[toCode] || [ 
                  { id: '901', dep: '10:00', arr: '14:00' },
                  { id: '903', dep: '18:00', arr: '22:00' }
             ];
@@ -211,14 +209,14 @@
                 const [dh, dm] = flight.dep.split(':').map(Number);
                 const [ah, am] = flight.arr.split(':').map(Number);
                 let durationM = (ah * 60 + am) - (dh * 60 + dm);
-                if (durationM < 0) durationM += 24 * 60; // 日またぎ対応
+                if (durationM < 0) durationM += 24 * 60; 
                 const durationStr = `${Math.floor(durationM/60)}h ${durationM%60}m`;
 
-                // 価格（適当な変動をつける）
+                // 価格
                 const base = targetData.basePrice || 20000;
                 let priceMod = 1.0;
-                if (dh < 9) priceMod = 0.9; // 早朝は少し安い
-                if (dh > 17) priceMod = 1.1; // 夕方は高い
+                if (dh < 9) priceMod = 0.9;
+                if (dh > 17) priceMod = 1.1;
 
                 const stdPrice = Math.floor(base * priceMod);
                 const prePrice = Math.floor(stdPrice * 2.5);
@@ -238,12 +236,12 @@
                         </div>
                     </div>
                     <div class="fare-selection">
-                        <div class="fare-box" onclick="selectFare(this, ${stdPrice})">
+                        <div class="fare-box" onclick="selectFare(this, ${stdPrice}, '${flight.id}', 'Standard')">
                             <div class="class-name">Standard</div>
                             <div class="fare-price">¥${stdPrice.toLocaleString()}</div>
                             <div class="fare-seats">空席あり</div>
                         </div>
-                        <div class="fare-box premium" onclick="selectFare(this, ${prePrice})">
+                        <div class="fare-box premium" onclick="selectFare(this, ${prePrice}, '${flight.id}', 'Premium')">
                             <div class="class-name">Premium</div>
                             <div class="fare-price">¥${prePrice.toLocaleString()}</div>
                             <div class="fare-seats">残りわずか</div>
@@ -267,23 +265,14 @@
             });
         });
 
-        // --- 修正箇所：ここから下を書き換えてください ---
-
-        // 選ばれた情報を一時保存する変数
-        let selectedFlightData = {};
-
-        // 料金選択時の処理
+        // 料金選択時の処理（データ保存）
         function selectFare(element, price, flightId, className) {
-            // 見た目の選択処理
             document.querySelectorAll('.fare-box').forEach(box => box.classList.remove('selected'));
             element.classList.add('selected');
             
-            // 下部バーを表示
             document.getElementById('bottomBar').classList.add('visible');
             document.getElementById('totalAmount').textContent = '¥' + price.toLocaleString();
 
-            // ★データを保存（次のページに送るため）
-            // URLから現在の都市コードを取得
             const params = new URLSearchParams(window.location.search);
             const from = params.get('from') || 'NGO';
             const to = params.get('to') || 'FUK';
@@ -291,19 +280,18 @@
             selectedFlightData = {
                 from: from,
                 to: to,
-                flightId: flightId || 'LW---', // 便名
+                flightId: flightId,
                 class: className,
                 price: price
             };
         }
 
-        // 「次へ」ボタンを押したときの処理
+        // 次へボタン処理
         document.querySelector('.next-btn').addEventListener('click', function() {
             if (!selectedFlightData.price) {
                 alert('フライトを選択してください');
                 return;
             }
-            // データをURLにくっつけて次のページ(passenger.html)へ移動
             const query = new URLSearchParams(selectedFlightData).toString();
             window.location.href = `passenger.html?${query}`;
         });
