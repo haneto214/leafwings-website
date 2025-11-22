@@ -267,12 +267,46 @@
             });
         });
 
-        function selectFare(element, price) {
+        // --- 修正箇所：ここから下を書き換えてください ---
+
+        // 選ばれた情報を一時保存する変数
+        let selectedFlightData = {};
+
+        // 料金選択時の処理
+        function selectFare(element, price, flightId, className) {
+            // 見た目の選択処理
             document.querySelectorAll('.fare-box').forEach(box => box.classList.remove('selected'));
             element.classList.add('selected');
+            
+            // 下部バーを表示
             document.getElementById('bottomBar').classList.add('visible');
             document.getElementById('totalAmount').textContent = '¥' + price.toLocaleString();
+
+            // ★データを保存（次のページに送るため）
+            // URLから現在の都市コードを取得
+            const params = new URLSearchParams(window.location.search);
+            const from = params.get('from') || 'NGO';
+            const to = params.get('to') || 'FUK';
+            
+            selectedFlightData = {
+                from: from,
+                to: to,
+                flightId: flightId || 'LW---', // 便名
+                class: className,
+                price: price
+            };
         }
+
+        // 「次へ」ボタンを押したときの処理
+        document.querySelector('.next-btn').addEventListener('click', function() {
+            if (!selectedFlightData.price) {
+                alert('フライトを選択してください');
+                return;
+            }
+            // データをURLにくっつけて次のページ(passenger.html)へ移動
+            const query = new URLSearchParams(selectedFlightData).toString();
+            window.location.href = `passenger.html?${query}`;
+        });
     </script>
 </body>
 </html>
