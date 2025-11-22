@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEAF WINGS | Fresh Air, Fresh Wings.</title>
     
-    <linkpreconnect href="https://fonts.googleapis.com">
-    <linkpreconnect href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 基本設定：カラーパレットを刷新 --- */
+        /* --- 基本設定 --- */
         :root {
-            --leaf-mint: #00C9A7; /* 新メインカラー：爽やかなミントグリーン */
-            --leaf-sky: #4FACFE;  /* 新サブカラー：澄み渡るスカイブルー */
+            --leaf-mint: #00C9A7;
+            --leaf-sky: #4FACFE;
             --pure-white: #FFFFFF;
-            --accent-gray: #F0F4F8; /* 少し青みがかった涼しげなライトグレー */
-            --text-dark: #2C3E50;   /* 文字色は視認性のため濃いグレーを維持 */
+            --accent-gray: #F0F4F8;
+            --text-dark: #2C3E50;
             --text-light-gray: #8898aa;
         }
         body, html {
@@ -27,7 +27,6 @@
         }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         h2.section-title {
-            /* タイトル色をミントグリーンに変更 */
             text-align: center; font-size: 32px; color: var(--leaf-mint); margin-bottom: 40px; font-weight: 700; letter-spacing: 0.05em;
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
@@ -35,14 +34,12 @@
         /* --- ヘッダー --- */
         header {
             display: flex; justify-content: space-between; align-items: center; padding: 15px 40px;
-            /* 背景をミントグリーンとスカイブルーのグラデーションに変更 */
             background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky));
             color: var(--pure-white);
             position: fixed; width: 100%; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
         .logo { font-size: 20px; font-weight: 700; letter-spacing: 0.1em; display: flex; align-items: center; }
         .logo-icon { width: 24px; height: 24px; background-color: var(--pure-white); border-radius: 50%; margin-right: 10px; position: relative; }
-        /* ロゴアイコンの中身の色を変更 */
         .logo-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid var(--leaf-mint); }
         nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
         nav ul li { margin-left: 25px; font-size: 13px; font-weight: 500; letter-spacing: 0.05em; position: relative; }
@@ -55,11 +52,9 @@
 
         /* --- ヒーローセクション --- */
         .hero {
-            /* 背景を爽やかなミント〜スカイブルーのグラデーションに変更 */
             background: linear-gradient(135deg, var(--leaf-mint) 0%, var(--leaf-sky) 100%);
             min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--pure-white); padding: 120px 20px 60px; position: relative; overflow: hidden;
         }
-        /* 背景の飛行機シルエットを少し明るく */
         .hero::before { content: '✈︎'; font-size: 450px; position: absolute; top: 50%; left: 65%; transform: translate(-50%, -50%) rotate(-15deg); opacity: 0.1; color: var(--pure-white); z-index: 0; filter: blur(2px); }
         .hero-content { z-index: 1; max-width: 800px; margin-bottom: 40px; }
         .hero h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 700; margin-bottom: 15px; letter-spacing: 0.08em; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -68,11 +63,17 @@
         /* 予約ウィジェット */
         .booking-widget { background-color: var(--pure-white); padding: 30px; border-radius: 4px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); display: flex; gap: 15px; align-items: flex-end; color: var(--text-dark); width: 90%; max-width: 1080px; z-index: 10; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 150px; display: flex; flex-direction: column; text-align: left; }
-        /* ラベル色をミントグリーンに変更 */
         .form-group label { font-size: 11px; font-weight: 700; color: var(--leaf-mint); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
         .form-group input, .form-group select { padding: 15px; border: 1px solid #e0e0e0; border-radius: 2px; font-size: 15px; font-family: inherit; background-color: #fcfcfc; transition: 0.3s; width: 100%; box-sizing: border-box; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--leaf-mint); background-color: var(--pure-white); }
-        /* 検索ボタンをグラデーションに変更 */
+        
+        /* エラー表示のデザイン（追加） */
+        .error-message {
+            color: #e74c3c; font-size: 12px; font-weight: 700; margin-bottom: 10px; display: none; width: 100%; text-align: center; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .input-error { border-color: #e74c3c !important; background-color: #fff8f8 !important; }
+
         .search-btn { background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); color: var(--pure-white); border: none; padding: 18px 40px; font-size: 15px; font-weight: 700; border-radius: 2px; cursor: pointer; transition: 0.3s; letter-spacing: 0.1em; box-shadow: 0 5px 15px rgba(0, 201, 167, 0.3); flex-grow: 1; }
         .search-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 201, 167, 0.4); }
 
@@ -80,7 +81,6 @@
         .news-section { padding: 60px 0; background-color: var(--pure-white); }
         .news-container { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; gap: 40px; flex-wrap: wrap; }
         .news-block { flex: 1; min-width: 300px; }
-        /* 見出しのアクセントカラーを変更 */
         .news-block h3 { font-size: 16px; color: var(--leaf-mint); margin-bottom: 20px; display: flex; align-items: center; }
         .news-block h3::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: var(--leaf-mint); margin-right: 10px; }
         .news-list { list-style: none; padding: 0; margin: 0; }
@@ -92,11 +92,9 @@
         /* --- 就航地ガイドセクション --- */
         .destinations { padding: 80px 0; background-color: var(--accent-gray); }
         .destinations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        /* カード背景色を変更 */
         .destination-card { position: relative; height: 300px; border-radius: 4px; overflow: hidden; cursor: pointer; background-color: var(--leaf-mint); }
         .destination-card:hover .destination-bg { transform: scale(1.05); opacity: 0.9; }
         .destination-bg { width: 100%; height: 100%; background-size: cover; background-position: center; transition: 0.5s; opacity: 0.7; }
-        /* プレースホルダーグラデーションを新カラーに合わせて調整（明るく爽やかに） */
         .dest-tpe { background: linear-gradient(to top, var(--leaf-mint), transparent), linear-gradient(to right, #FFC371, #FF5F6D); }
         .dest-icn { background: linear-gradient(to top, var(--leaf-sky), transparent), linear-gradient(to right, #6dd5ed, #2193b0); }
         .dest-mnl { background: linear-gradient(to top, var(--leaf-mint), transparent), linear-gradient(to right, #f5af19, #f12711); }
@@ -110,7 +108,6 @@
         .feature-cards { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
         .feature-card { background: var(--pure-white); padding: 40px; border-radius: 4px; flex: 1; min-width: 250px; max-width: 350px; text-align: center; border: 1px solid #eee; transition: 0.4s; }
         .feature-card:hover { border-color: var(--leaf-mint); box-shadow: 0 10px 30px rgba(0, 201, 167, 0.1); }
-        /* アイコン色を変更 */
         .feature-icon { font-size: 48px; color: var(--leaf-mint); margin-bottom: 25px; }
         .feature-card h3 { margin: 0 0 15px 0; color: var(--leaf-mint); font-size: 18px; font-weight: 700; }
         .feature-card p { font-size: 14px; color: #666; line-height: 1.8; }
@@ -118,14 +115,12 @@
         /* --- 安全と品質への誓いセクション --- */
         .commitment { padding: 80px 0; background-color: var(--accent-gray); }
         .commitment-blocks { display: flex; gap: 40px; flex-wrap: wrap; }
-        /* ボーダー色を変更 */
         .commitment-block { flex: 1; min-width: 300px; background-color: var(--pure-white); padding: 40px; border-radius: 4px; border-left: 5px solid var(--leaf-mint); }
         .commitment-block h3 { color: var(--leaf-mint); font-size: 20px; margin-bottom: 20px; display: flex; align-items: center; }
         .commitment-icon { font-size: 24px; margin-right: 15px; }
         .commitment-block p { font-size: 15px; color: #555; line-height: 1.9; }
 
         /* --- 機内体験バナー --- */
-        /* グラデーションを新カラーに変更 */
         .experience-banner { height: 400px; position: relative; display: flex; align-items: center; background: linear-gradient(45deg, var(--leaf-mint), var(--leaf-sky)); overflow: hidden; }
         .experience-banner::after { content: '💺 💺'; position: absolute; right: 10%; top: 50%; transform: translateY(-50%); font-size: 150px; opacity: 0.1; color: var(--pure-white); }
         .experience-content { position: relative; z-index: 2; max-width: 500px; margin-left: 10%; color: var(--pure-white); padding: 20px; }
@@ -135,7 +130,6 @@
         .btn-outline-white:hover { background-color: var(--pure-white); color: var(--leaf-mint); }
 
         /* --- アプリ＆マイレージ誘導 --- */
-        /* 背景をグラデーションに変更 */
         .app-mileage { padding: 60px 20px; background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky)); color: var(--pure-white); text-align: center; }
         .app-mileage h3 { font-size: 24px; margin-bottom: 20px; }
         .app-mileage p { margin-bottom: 30px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto; }
@@ -147,10 +141,9 @@
         .app-icon { font-size: 24px; margin-right: 12px; }
 
         /* --- フッター --- */
-        /* 背景色を少し明るいネイビーに変更して軽さを出す */
         footer { background-color: #1a2a3a; color: rgba(255,255,255,0.6); padding: 40px 20px; text-align: center; font-size: 11px; letter-spacing: 0.1em; }
 
-        /* --- スマホ対応メディアクエリ (変更なし) --- */
+        /* --- スマホ対応メディアクエリ --- */
         @media (max-width: 768px) {
             header { padding: 15px 20px; flex-wrap: wrap; }
             nav { display: none; }
@@ -166,9 +159,7 @@
             .experience-banner { height: auto; padding: 50px 0; }
             .experience-content { margin-left: 20px; margin-right: 20px; }
         }
-    </style>
-</head>
-<body>
+    </style></head><body>
     
     <header>
         <div class="logo"><div class="logo-icon"></div>LEAF WINGS</div>
@@ -241,6 +232,9 @@
                 <label>クラス Class</label>
                 <select><option>全クラス</option><option>Premium Class</option><option>Standard Class</option></select>
             </div>
+            
+            <p id="search-error" class="error-message">⚠ 到着地を選択してください</p>
+
             <button class="search-btn">検索 Search</button>
         </div>
     </section>
@@ -360,18 +354,17 @@
         <p>&copy; 202X LEAF WINGS Co., Ltd. All rights reserved. | IATA: LW / ICAO: LFW</p>
     </footer>
 
- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- 既存のロジック：日付や空港の制御 ---
             const departureSelect = document.getElementById('departure-select');
             const arrivalSelect = document.getElementById('arrival-select');
             const dateInput = document.getElementById('dep-date');
+            const searchBtn = document.querySelector('.search-btn');
+            const errorMsg = document.getElementById('search-error');
             
-            // 日付の初期値を「今日」に設定
             const today = new Date().toISOString().split('T')[0];
             dateInput.value = today;
 
-            // 空港リスト
             const cities = {
                 'NGO': '名古屋(中部) NGO',
                 'CTS': '札幌(新千歳) CTS', 'SDJ': '仙台 SDJ', 'KIJ': '新潟 KIJ',
@@ -379,25 +372,17 @@
                 'TPE': '台北(桃園) TPE', 'ICN': 'ソウル(仁川) ICN', 'MNL': 'マニラ MNL', 'BKK': 'バンコク BKK'
             };
             
-            // 中部拠点（ハブ＆スポーク）のロジック
             const routes = {
                 'NGO': ['CTS', 'SDJ', 'KIJ', 'FUK', 'KMJ', 'KMI', 'MYJ', 'OKA', 'TPE', 'ICN', 'MNL', 'BKK'],
-                'other': ['NGO'] // 地方空港からはNGO行きのみ
+                'other': ['NGO']
             };
 
+            // 出発地変更時のロジック
             departureSelect.addEventListener('change', function() {
                 const selectedDep = this.value;
-                let availableArrivals = [];
+                let availableArrivals = (selectedDep === 'NGO') ? routes['NGO'] : routes['other'];
 
-                if (selectedDep === 'NGO') {
-                    availableArrivals = routes['NGO'];
-                } else {
-                    availableArrivals = routes['other'];
-                }
-
-                // 到着地セレクトボックスをリセットして生成し直し
                 arrivalSelect.innerHTML = '<option value="">選択してください</option>';
-                
                 const domGroup = document.createElement('optgroup'); domGroup.label = '国内線';
                 const intGroup = document.createElement('optgroup'); intGroup.label = '国際線';
                 let hasDom = false, hasInt = false;
@@ -406,37 +391,33 @@
                     const option = document.createElement('option');
                     option.value = cityCode;
                     option.textContent = cities[cityCode];
-                    
                     if (['TPE', 'ICN', 'MNL', 'BKK'].includes(cityCode)) {
-                        intGroup.appendChild(option);
-                        hasInt = true;
+                        intGroup.appendChild(option); hasInt = true;
                     } else {
-                        domGroup.appendChild(option);
-                        hasDom = true;
+                        domGroup.appendChild(option); hasDom = true;
                     }
                 });
-
                 if (hasDom) arrivalSelect.appendChild(domGroup);
                 if (hasInt) arrivalSelect.appendChild(intGroup);
             });
 
-            // --- ★ここを追加しました：画面遷移の処理 ---
-            const searchBtn = document.querySelector('.search-btn');
-            
+            // エラーリセット
+            arrivalSelect.addEventListener('change', function() {
+                if(this.value !== "") {
+                    this.classList.remove('input-error');
+                    errorMsg.style.display = 'none';
+                }
+            });
+
+            // 検索実行
             searchBtn.addEventListener('click', function() {
-                // バリデーション：到着地が選ばれていない場合
                 if (arrivalSelect.value === "") {
-                    alert("到着地を選択してください。\nPlease select a destination.");
-                    arrivalSelect.focus();
+                    errorMsg.style.display = 'block';
+                    errorMsg.textContent = '⚠ 到着地を選択してください / Please select a destination';
+                    arrivalSelect.classList.add('input-error');
                     return;
                 }
-
-                // リンク先へ移動（同じフォルダの flight-list.html へ）
                 window.location.href = 'flight-list.html';
             });
         });
-    </script>
-
-</body>
-</html>
-
+    </script></body></html>
