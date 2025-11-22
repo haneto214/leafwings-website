@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約完了 | LEAF WINGS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 共通カラー設定 --- */
+        :root {
+            --leaf-mint: #00C9A7;
+            --leaf-sky: #4FACFE;
+            --pure-white: #FFFFFF;
+            --text-dark: #2C3E50;
+        }
+        body, html { margin: 0; padding: 0; font-family: "Montserrat", "Noto Sans JP", sans-serif; background-color: var(--pure-white); color: var(--text-dark); height: 100%; }
+
+        /* 全画面中央揃えレイアウト */
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* 背景は極めて薄いミントブルーのグラデーション */
+            background: linear-gradient(135deg, rgba(0,201,167,0.05) 0%, rgba(79,172,254,0.05) 100%);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* チェックマークアイコン */
+        .icon-check {
+            width: 80px; height: 80px;
+            background: linear-gradient(45deg, var(--leaf-mint), var(--leaf-sky));
+            color: var(--pure-white);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 40px; margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 201, 167, 0.3);
+            /* ふわっと現れるアニメーション */
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        h1 { font-size: 28px; margin-bottom: 15px; color: var(--text-dark); letter-spacing: 0.05em; }
+        p { color: #666; line-height: 1.8; margin-bottom: 40px; font-size: 14px; max-width: 600px; }
+        
+        .note { font-size: 11px; color: #aaa; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+
+        /* トップへ戻るボタン */
+        .btn-home {
+            background: linear-gradient(90deg, var(--leaf-mint), var(--leaf-sky));
+            color: var(--pure-white);
+            text-decoration: none;
+            padding: 15px 50px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 201, 167, 0.3);
+            transition: 0.3s;
+            display: inline-block;
+            letter-spacing: 0.05em;
+        }
+        .btn-home:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 201, 167, 0.4); opacity: 0.95; }
+
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="icon-check">✔</div>
+        <h1>Thank you for booking.</h1>
+        <p>
+            ご予約ありがとうございます。<br>
+            LEAF WINGS での新しい空の旅をお楽しみください。<br>
+            ご登録のメールアドレスへ「eチケットお客様控え」をお送りいたしました。
+        </p>
+        
+        <a href="index.html" class="btn-home">トップページへ戻る</a>
+
+        <div class="note">
+            ※これはデモンストレーション画面です。<br>実際の予約は行われておらず、個人情報は送信されていません。
+        </div>
+    </div>
+</body>
+</html>
