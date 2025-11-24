@@ -8,9 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <style>
-        /* --- 共通設定 --- */
+        /* --- スタイルは今までと同じです（変更なし） --- */
         :root { --leaf-mint: #00C9A7; --leaf-sky: #4FACFE; --pure-white: #FFFFFF; --accent-gray: #F0F4F8; --text-dark: #2C3E50; --text-light: #8898aa; }
         body, html { margin: 0; padding: 0; font-family: "Montserrat", "Noto Sans JP", sans-serif; background-color: var(--accent-gray); color: var(--text-dark); line-height: 1.6; }
         
@@ -22,7 +24,6 @@
         .step-indicator { display: flex; gap: 20px; font-size: 12px; opacity: 0.9; }
         .step.active { font-weight: 700; border-bottom: 2px solid var(--pure-white); padding-bottom: 2px; }
 
-        /* 選択済みフライト表示バー */
         .selected-summary { background-color: #2c3e50; color: white; padding: 15px 0; display: none; animation: slideDown 0.3s ease; }
         .selected-content { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
         .selected-label { background: var(--leaf-mint); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 10px; }
@@ -70,6 +71,9 @@
         .fare-seats { font-size: 11px; color: var(--text-light); margin-top: 5px; }
         .fare-box.premium .class-name { color: #d4af37; }
 
+        /* ローディング表示 */
+        .loading { text-align: center; padding: 50px; color: var(--leaf-mint); font-weight: 700; }
+
         @media (max-width: 768px) {
             .flight-info-row { flex-direction: column; align-items: flex-start; }
             .flight-times { width: 100%; }
@@ -111,11 +115,16 @@
 
     <div class="container">
         <div class="date-strip" id="date-strip"></div>
-        <div class="flight-list" id="flight-list-container"></div>
+        <div class="flight-list" id="flight-list-container">
+            <div class="loading">Searching Flights...<br>フライト情報を取得中...</div>
+        </div>
     </div>
 
     <script>
-        // 状態管理
+        // ★★★ ここにコピーしたURLを貼り付けてください！ ★★★
+        // 例: "https://docs.google.com/spreadsheets/d/e/2PACX-12345.../pub?output=csv"
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRaQ9icjIO6vyY3Skruj6gPPrpG9Mct58Ej36edfv-sP5NcQ9vU8LXY1H2mpEamhtmxnd2TNz_-njSN/pub?output=csv"; 
+
         let appState = {
             step: 1,
             tripType: 'oneway',
@@ -123,43 +132,15 @@
             inboundData: null,
             currentFrom: '',
             currentTo: '',
-            currentDate: '' // "YYYY-MM-DD"
+            currentDate: '',
+            allFlights: [] // ここにスプレッドシートのデータを入れます
         };
 
+        // 都市データ
         const airportData = {
-            'NGO': { city: '名古屋(中部)' }, 
-            'CTS': { city: '札幌(新千歳)', basePrice: 12400 }, 'SDJ': { city: '仙台', basePrice: 11000 }, 'KIJ': { city: '新潟', basePrice: 14000 },
-            'FUK': { city: '福岡', basePrice: 13500 }, 'KMJ': { city: '熊本', basePrice: 15200 }, 'KMI': { city: '宮崎', basePrice: 16000 },
-            'MYJ': { city: '松山', basePrice: 11500 }, 'OKA': { city: '沖縄(那覇)', basePrice: 18900 },
-            'TPE': { city: '台北', basePrice: 35000 }, 'ICN': { city: 'ソウル', basePrice: 28000 }, 'MNL': { city: 'マニラ', basePrice: 42000 }
-        };
-
-        // 時刻表データ
-        const schedulesOut = {
-            'CTS': [{id:'101',d:'07:10',a:'08:50'},{id:'103',d:'11:00',a:'12:40'},{id:'105',d:'15:00',a:'16:40'},{id:'107',d:'19:00',a:'20:40'}],
-            'SDJ': [{id:'151',d:'07:15',a:'08:25'},{id:'153',d:'18:00',a:'19:10'}],
-            'KIJ': [{id:'181',d:'07:10',a:'08:05'},{id:'183',d:'16:40',a:'17:35'}],
-            'FUK': [{id:'301',d:'07:10',a:'08:35'},{id:'303',d:'08:45',a:'10:10'},{id:'305',d:'13:30',a:'14:55'},{id:'307',d:'16:15',a:'17:40'}],
-            'KMJ': [{id:'331',d:'07:35',a:'09:00'},{id:'333',d:'18:00',a:'19:25'}],
-            'KMI': [{id:'361',d:'13:00',a:'14:20'}],
-            'MYJ': [{id:'401',d:'07:30',a:'08:35'},{id:'403',d:'12:15',a:'13:20'}],
-            'OKA': [{id:'501',d:'07:10',a:'09:35'},{id:'503',d:'12:00',a:'14:25'},{id:'505',d:'13:25',a:'15:50'}],
-            'ICN': [{id:'801',d:'07:10',a:'09:10'},{id:'803',d:'17:00',a:'19:00'}],
-            'TPE': [{id:'831',d:'07:10',a:'09:20'},{id:'833',d:'14:00',a:'16:10'}],
-            'MNL': [{id:'861',d:'09:30',a:'12:50'}]
-        };
-        const schedulesIn = {
-            'CTS': [{id:'102',d:'09:30',a:'11:15'},{id:'104',d:'13:20',a:'15:05'},{id:'106',d:'17:20',a:'19:05'},{id:'108',d:'21:20',a:'23:05'}],
-            'SDJ': [{id:'152',d:'09:05',a:'10:20'},{id:'154',d:'19:50',a:'21:05'}],
-            'KIJ': [{id:'182',d:'08:40',a:'09:40'},{id:'184',d:'18:10',a:'19:10'}],
-            'FUK': [{id:'302',d:'09:25',a:'10:40'},{id:'304',d:'11:00',a:'12:15'},{id:'306',d:'15:45',a:'17:00'},{id:'308',d:'18:30',a:'19:45'}],
-            'KMJ': [{id:'332',d:'09:50',a:'11:05'},{id:'334',d:'20:15',a:'21:30'}],
-            'KMI': [{id:'362',d:'15:10',a:'16:25'}],
-            'MYJ': [{id:'402',d:'09:25',a:'10:25'},{id:'404',d:'14:10',a:'15:10'}],
-            'OKA': [{id:'502',d:'10:25',a:'12:35'},{id:'504',d:'15:15',a:'17:25'},{id:'506',d:'16:40',a:'18:50'}],
-            'ICN': [{id:'802',d:'10:10',a:'12:00'},{id:'804',d:'20:00',a:'21:50'}],
-            'TPE': [{id:'832',d:'10:20',a:'14:00'},{id:'834',d:'17:10',a:'20:50'}],
-            'MNL': [{id:'862',d:'13:50',a:'18:50'}]
+            'NGO': { city: '名古屋(中部)' }, 'CTS': { city: '札幌(新千歳)' }, 'SDJ': { city: '仙台' }, 'KIJ': { city: '新潟' },
+            'FUK': { city: '福岡' }, 'KMJ': { city: '熊本' }, 'KMI': { city: '宮崎' }, 'MYJ': { city: '松山' }, 'OKA': { city: '沖縄(那覇)' },
+            'TPE': { city: '台北' }, 'ICN': { city: 'ソウル' }, 'MNL': { city: 'マニラ' }
         };
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -167,17 +148,38 @@
             appState.tripType = params.get('tripType') || 'oneway';
             appState.currentFrom = params.get('from') || 'NGO';
             appState.currentTo = params.get('to') || 'FUK';
-            // ここでURLから日付を確実に取得
             appState.currentDate = params.get('depDate') || new Date().toISOString().split('T')[0];
 
-            renderPage();
+            // ★最初にスプレッドシートを読み込む
+            fetchFlights();
         });
+
+        function fetchFlights() {
+            if(SHEET_URL === "YOUR_SHEET_URL_HERE") {
+                alert("エラー：スプレッドシートのURLが設定されていません。コードを修正してください。");
+                return;
+            }
+
+            // Papa Parseを使ってCSVを読み込む
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    console.log("データ取得成功:", results.data);
+                    appState.allFlights = results.data; // データを保存
+                    renderPage(); // 画面表示開始
+                },
+                error: function(err) {
+                    console.error("データ取得失敗:", err);
+                    document.getElementById('flight-list-container').innerHTML = '<div style="text-align:center; color:red;">データの読み込みに失敗しました。<br>URLを確認してください。</div>';
+                }
+            });
+        }
 
         function renderPage() {
             document.getElementById('display-from').textContent = appState.currentFrom;
             document.getElementById('display-to').textContent = appState.currentTo;
             
-            // 日付表示のフォーマット
             const dObj = new Date(appState.currentDate);
             const dayOfWeek = ['日','月','火','水','木','金','土'][dObj.getDay()];
             document.getElementById('display-date').textContent = `${appState.currentDate.replace(/-/g, '/')} (${dayOfWeek})`;
@@ -192,7 +194,7 @@
                 badge.className = 'direction-badge inbound';
                 document.getElementById('outbound-summary').style.display = 'block';
                 document.getElementById('summary-text').textContent = 
-                    `${appState.outboundData.from} ✈ ${appState.outboundData.to} / LW${appState.outboundData.id} / ${appState.outboundData.date}`;
+                    `${appState.outboundData.from} ✈ ${appState.outboundData.to} / LW${appState.outboundData.id}`;
             }
             renderFlights();
             renderDateStrip();
@@ -202,40 +204,40 @@
             const container = document.getElementById('flight-list-container');
             container.innerHTML = '';
 
-            let list = [];
-            if (appState.currentFrom === 'NGO') list = schedulesOut[appState.currentTo] || [];
-            else list = schedulesIn[appState.currentFrom] || [];
-
-            let basePrice = 20000;
-            if (appState.step === 1) basePrice = airportData[appState.currentTo]?.basePrice || 20000;
-            else basePrice = airportData[appState.currentFrom]?.basePrice || 20000;
+            // ★データベース(allFlights)から、条件に合う便を検索する
+            // 条件: 出発地(from) と 到着地(to) が一致するもの
+            const list = appState.allFlights.filter(flight => {
+                return flight.from === appState.currentFrom && flight.to === appState.currentTo;
+            });
 
             if(list.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#999;">該当するフライトがありません。</div>';
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#999;">該当するフライトがありません。<br>No flights available.</div>';
                 return;
             }
 
+            // フライトカードの生成
             list.forEach(flight => {
-                const [dh, dm] = flight.d.split(':').map(Number);
-                let arrTimeStr = flight.a.split('(')[0]; 
-                const [ah, am] = arrTimeStr.split(':').map(Number);
+                // 所要時間計算
+                const [dh, dm] = flight.dep.split(':').map(Number);
+                const [ah, am] = flight.arr.split(':').map(Number);
                 let dur = (ah * 60 + am) - (dh * 60 + dm);
-                if(flight.a.includes('(+1)')) dur += 1440;
                 if(dur < 0) dur += 1440;
                 const durStr = `${Math.floor(dur/60)}h ${dur%60}m`;
 
-                const std = Math.floor(basePrice * (dh<9?0.9:dh>17?1.1:1.0));
+                // 価格計算 (CSVの price を基準にする)
+                const basePrice = parseInt(flight.price);
+                const std = Math.floor(basePrice * (dh<9?0.9:dh>17?1.1:1.0)); // 早朝割引などのロジックは維持
                 const pre = Math.floor(std * 2.5);
 
                 const html = `
                 <div class="flight-card">
                     <div class="flight-info-row">
                         <div class="flight-times">
-                            <div class="time-group"><div class="time">${flight.d}</div><div class="airport">${appState.currentFrom}</div></div>
+                            <div class="time-group"><div class="time">${flight.dep}</div><div class="airport">${appState.currentFrom}</div></div>
                             <div class="duration-line"><span class="duration-text">${durStr}</span></div>
-                            <div class="time-group"><div class="time">${flight.a}</div><div class="airport">${appState.currentTo}</div></div>
+                            <div class="time-group"><div class="time">${flight.arr}</div><div class="airport">${appState.currentTo}</div></div>
                         </div>
-                        <div class="flight-meta"><span class="flight-number">LW ${flight.id}</span><span>A320neo</span><span>Wi-Fi Free</span></div>
+                        <div class="flight-meta"><span class="flight-number">LW ${flight.id}</span><span>${flight.aircraft || 'A320neo'}</span><span>Wi-Fi Free</span></div>
                     </div>
                     <div class="fare-selection">
                         <div class="fare-box" onclick="selectFlight('${flight.id}', ${std}, 'Standard')">
@@ -259,16 +261,12 @@
             if (appState.step === 1) {
                 appState.outboundData = flightData;
                 if (appState.tripType === 'round') {
-                    // 往復の場合：Step 2へ
                     appState.step = 2;
                     const temp = appState.currentFrom;
                     appState.currentFrom = appState.currentTo;
                     appState.currentTo = temp;
-                    
-                    // ★重要：復路の日付を取得して現在日にセット
                     const params = new URLSearchParams(window.location.search);
                     appState.currentDate = params.get('retDate') || appState.currentDate;
-
                     window.scrollTo(0, 0);
                     renderPage();
                 } else {
@@ -286,14 +284,14 @@
             p.set('out_id', appState.outboundData.id);
             p.set('out_price', appState.outboundData.price);
             p.set('out_class', appState.outboundData.class);
-            p.set('out_date', appState.outboundData.date); // 日付も渡す
+            p.set('out_date', appState.outboundData.date);
             p.set('from', appState.outboundData.from);
             p.set('to', appState.outboundData.to);
             
             if(appState.inboundData) {
                 p.set('in_id', appState.inboundData.id);
                 p.set('in_price', appState.inboundData.price);
-                p.set('in_date', appState.inboundData.date); // 復路日付も渡す
+                p.set('in_date', appState.inboundData.date);
             }
             
             window.location.href = `passenger.html?${p.toString()}`;
@@ -302,24 +300,17 @@
         function renderDateStrip() {
             const el = document.getElementById('date-strip');
             el.innerHTML = '';
-            
-            // 検索日を基準に前後を表示
             const centerDate = new Date(appState.currentDate);
-            
             for(let i=-2; i<=3; i++) {
                 const d = new Date(centerDate);
                 d.setDate(centerDate.getDate() + i);
-                
                 const m = d.getMonth()+1;
                 const date = d.getDate();
                 const w = ['日','月','火','水','木','金','土'][d.getDay()];
                 const dayStr = `${m}/${date}(${w})`;
-                
                 const active = i===0 ? 'active' : '';
-                // 簡易的な価格変動演出（土日は高く）
                 const isWeekend = (d.getDay()===0 || d.getDay()===6);
                 const priceLabel = isWeekend ? "High" : "Low";
-
                 el.innerHTML += `<div class="date-card ${active}"><div class="day">${dayStr}</div><div class="price" style="font-size:10px;">${priceLabel}</div></div>`;
             }
         }
